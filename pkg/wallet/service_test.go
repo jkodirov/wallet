@@ -262,3 +262,26 @@ func TestService_FavoritePayment_fail(t *testing.T) {
 		return
 	}
 }
+
+func TestService_PayFromFavorite_success(t *testing.T) {
+	s := newTestService()
+	_, payments, err := s.addAccount(defaultTestAccount)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	payment := payments[0]
+	favorite, err := s.FavoritePayment(payment.ID, "my first fp")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	newPayment, err := s.PayFromFavorite(favorite.ID)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if payment.Amount != newPayment.Amount {
+		t.Error("amount must be same")
+	}
+}
