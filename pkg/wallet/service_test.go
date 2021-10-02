@@ -229,3 +229,36 @@ func TestService_Repeat_fail(t *testing.T) {
 		return
 	}
 }
+
+func TestService_FavoritePayment_success(t *testing.T) {
+	s := newTestService()
+	_, payments, err := s.addAccount(defaultTestAccount)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	payment := payments[0]
+	favorite, err := s.FavoritePayment(payment.ID, "my first fp")
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	if !(favorite.AccountID == payment.AccountID && favorite.Amount == payment.Amount) {
+		t.Error("FavoritePayment(): all property must be same")
+		return
+	}
+}
+
+func TestService_FavoritePayment_fail(t *testing.T) {
+	s := newTestService()
+	_, _, err := s.addAccount(defaultTestAccount)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	_, err = s.FavoritePayment(uuid.New().String(), "my first fp")
+	if err == nil {
+		t.Error("must return error")
+		return
+	}
+}
