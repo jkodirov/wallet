@@ -195,3 +195,37 @@ func TestService_Reject_fail(t *testing.T) {
 		return
 	}
 }
+
+func TestService_Repeat_success(t *testing.T) {
+	s := newTestService()
+	_, payments, err := s.addAccount(defaultTestAccount)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+
+	payment := payments[0]
+	newPayment, err := s.Repeat(payment.ID)
+	if err != nil {
+		t.Errorf("Repeat(): error = %v", err)
+		return
+	}
+	if !(newPayment.AccountID == payment.AccountID && newPayment.Amount == payment.Amount && newPayment.Category == payment.Category) {
+		t.Error("Repeat(): except id all must be same")
+		return
+	}
+}
+
+func TestService_Repeat_fail(t *testing.T) {
+	s := newTestService()
+	_, _, err := s.addAccount(defaultTestAccount)
+	if err != nil {
+		t.Error(err)
+		return
+	}
+	_, err = s.Repeat(uuid.New().String())
+	if err == nil {
+		t.Error("Repeat(): must return error")
+		return
+	}
+}
