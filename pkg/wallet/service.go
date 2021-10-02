@@ -114,8 +114,8 @@ func (s *Service) Reject(paymentID string) error {
 		return err
 	}
 
-	account, err2 := s.FindAccountByID(payment.AccountID)
-	if err2 != nil {
+	account, err := s.FindAccountByID(payment.AccountID)
+	if err != nil {
 		return err
 	}
 
